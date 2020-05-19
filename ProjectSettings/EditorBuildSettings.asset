@@ -4,7 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/360VideoDemo.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 8fe01370b9e59fa4299432683cd5cb07,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 42740c0957a537d47a04a8b8067d2d87,
       type: 2}
