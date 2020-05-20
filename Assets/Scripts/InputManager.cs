@@ -4,18 +4,21 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR;
 
 public class InputManager : MonoBehaviour
-{   
-    public VideoManager videoManager = null;
-    public List<XRController> controllers = null;
+{      
+    public VideoManager videoManager = null;        
     public GameObject videoMenu = null;
+    public GameObject startMenu = null;
     public GameObject player = null;
+
     public float distance = 10f;
 
-    private Animator animator = null;    
-
     private void Start()
-    {
-        animator = videoMenu.GetComponentInChildren<Animator>();
+    {        
+        if (startMenu != null)
+        {
+            startMenu.transform.position = Camera.main.transform.position + Camera.main.transform.forward * distance;
+            startMenu.transform.rotation = Quaternion.LookRotation(videoMenu.transform.position - player.transform.position);
+        }
     }
 
     private void Update()
@@ -23,36 +26,21 @@ public class InputManager : MonoBehaviour
         if (!videoManager.IsVideoReady)
             return;
 
-        OculusInput();
-        VRInput();
+        OculusInput();        
         KeyboardInput();
     }
-    private void OculusInput()
+
+    private void OculusInput() //For Oculus(Go) setup
     {
-        if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.All))
+        if(OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.All) && videoManager.IsVideoReady)
         {
             videoMenu.transform.position = Camera.main.transform.position + Camera.main.transform.forward * distance;
             videoMenu.transform.rotation = Quaternion.LookRotation(videoMenu.transform.position - player.transform.position);
-            OpenMenu();
+            AnimationManager.animManager.OpenVideoMenu();
         }        
     }    
 
-    private void VRInput()
-    {
-        foreach (XRController controller in controllers)
-        {
-            if (controller.enableInputActions)
-            {
-                if (controller.inputDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool value))
-                {                                       
-                    videoMenu.transform.position = Camera.main.transform.position + Camera.main.transform.forward * distance;
-                    videoMenu.transform.rotation = Quaternion.LookRotation(videoMenu.transform.position - player.transform.position);
-                    OpenMenu();                                       
-                }                    
-            }                
-        }
-    }
-    private void KeyboardInput()
+    private void KeyboardInput() //For standalone testing
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -78,12 +66,5 @@ public class InputManager : MonoBehaviour
         {
             videoManager.SeekForward();
         }
-    }
-
-    private void OpenMenu()
-    {
-        bool isOpen = animator.GetBool("OpenMenu");
-
-        animator.SetBool("OpenMenu", !isOpen);
     }
 }
